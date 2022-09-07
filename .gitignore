@@ -1,0 +1,37 @@
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/build/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### Maven ###
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+### Gradle ###
+.gradle
+
+### Builds ###
+build/
+dist/
+out/
+bin/
+
+### Others ###
