@@ -12,4 +12,5 @@ RUN mvn -f /home/app/pom.xml clean package
 FROM openjdk:18-jdk-slim
 COPY --from=build /home/app/target/*.jar /usr/local/lib/app.jar
 EXPOSE 80
-ENTRYPOINT ["java", "-Dserver.port=80", "-jar","/usr/local/lib/app.jar"]
+ENV JAVA_OPTS="{{javaOpts}}"
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -jar /usr/local/lib/app.jar" ]

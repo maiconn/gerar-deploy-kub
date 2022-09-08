@@ -14,7 +14,8 @@ public class Main {
         String jobName = args[1];
         String image = args[2];
         String port = args[3];
-        copiarDockerfile(workspace);
+        String javaOpts = args[4];
+        copiarDockerfile(workspace, javaOpts, jobName);
         createArquivoCompleto(workspace, jobName, image, port);
     }
 
@@ -50,7 +51,7 @@ public class Main {
         }
     }
 
-    public static void copiarDockerfile(String workspace) throws IOException {
+    public static void copiarDockerfile(String workspace, String javaOpts, String jobName) throws IOException {
         System.out.println("criando arquivo dockerfile");
         URL resource = Main.class.getClassLoader().getResource(ARQUIVO_DOCKERFILE);
         if (resource == null) {
@@ -63,6 +64,13 @@ public class Main {
                 data = in.readAllBytes();
             }
             fileContent = new String(data);
+            String url = "-Dspring.datasource.url=jdbc:postgresql://ec2-44-205-64-253.compute-1.amazonaws.com:5432/d8sbui5qhgdu07";
+            String port = "-Dserver.port=80";
+            String forwardHeader = "-Dserver.use-forward-headers=true -Dserver.forward-headers-strategy=framework";
+            fileContent = fileContent.replace("{{javaOpts}}", javaOpts + " "
+                    + url + " "
+                    + port + " "
+                    + forwardHeader);
 
             File destino = new File(workspace + "/Dockerfile");
             if (destino.exists()) {
