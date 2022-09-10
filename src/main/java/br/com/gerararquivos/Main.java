@@ -65,7 +65,7 @@ public class Main {
             }
             fileContent = new String(data);
             String url = "-Dspring.datasource.url=jdbc:postgresql://ec2-44-205-64-253.compute-1.amazonaws.com:5432/d8sbui5qhgdu07";
-            String port = "-Dserver.port=80";
+            String port = "-Dserver.port=8080";
             String profile = "-Dspring.profiles.active=hml";
             String appName = "-Dspring.application.name=" + jobName;
             String forwardHeader = "-Dserver.use-forward-headers=true -Dserver.forward-headers-strategy=framework";
