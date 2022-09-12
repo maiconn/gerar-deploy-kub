@@ -77,11 +77,11 @@ public class Main {
                 data = in.readAllBytes();
             }
             fileContent = new String(data);
-            String url = "-Dspring.datasource.url=jdbc:postgresql://ec2-44-205-64-253.compute-1.amazonaws.com:5432/d8sbui5qhgdu07";
+            String url = "-Dspring.datasource.url=jdbc:oracle:thin:@10.0.20.80:1521/xe";
             String port = "-Dserver.port=8080";
             String profile = "-Dspring.profiles.active=hml";
             String appName = "-Dspring.application.name=" + appPath;
-            String forwardHeader = "-Dserver.use-forward-headers=true -Dserver.forward-headers-strategy=framework";
+            String forwardHeader = "-Dserver.use-forward-headers=true -Dserver.forward-headers-strategy=framework -Dspringdoc.swagger-ui.path=/";
             fileContent = fileContent.replace("{{javaOpts}}", javaOpts + " "
                     + url + " "
                     + port + " "
