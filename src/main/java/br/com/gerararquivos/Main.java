@@ -1,6 +1,7 @@
 package br.com.gerararquivos;
 
 import br.com.gerararquivos.database.SQLiteJDBCDriverConnection;
+import br.com.gerararquivos.shell.ExecutarDeployKub;
 
 import java.io.*;
 import java.net.URL;
@@ -11,12 +12,7 @@ public class Main {
     private static final String ARQUIVO_COMPLETO_TEMPLATE = "exemploCompleto.yaml";
     private static final String ARQUIVO_DOCKERFILE = "Dockerfile";
 
-    public static void main(String[] args) throws IOException, SQLException {
-        try {
-            Class.forName("org.sqlite.JDBC");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public static void main(String[] args) throws IOException, SQLException, InterruptedException {
         System.out.println(List.of(args));
         String workspace = args[0];
         String gitUrl = args[1];
@@ -31,6 +27,7 @@ public class Main {
 
         copiarDockerfile(workspace, javaOpts, appPath);
         createArquivoCompleto(workspace, image, port.toString(), usuario, repositorio);
+        ExecutarDeployKub.executarDeployKub(image, workspace);
     }
 
     private static void createArquivoCompleto(String workspace, String image, String port, String usuario, String repo) throws IOException {
