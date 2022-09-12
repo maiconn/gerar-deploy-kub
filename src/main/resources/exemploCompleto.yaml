@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{jobName}}
+  name: {{image}}
 spec:
   selector:
     matchLabels:
-      app: {{jobName}}
+      app: {{image}}
   replicas: 1
   template:
     metadata:
       labels:
-        app: {{jobName}}
+        app: {{image}}
     spec:
       containers:
-        - name: {{jobName}}
-          image: {{image}}
+        - name: {{image}}
+          image: {{image}}:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -22,7 +22,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{jobName}}
+  name: {{image}}
 spec:
   ports:
     - protocol: "TCP"
@@ -30,14 +30,14 @@ spec:
       targetPort: 8080  # The port exposed by the service
   type: NodePort        # Type of service
   selector:
-    app: {{jobName}}
+    app: {{image}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{jobName}}
+  name: {{image}}
   annotations:
-    nginx.ingress.kubernetes.io/x-forwarded-prefix: "/{{jobName}}"
+    nginx.ingress.kubernetes.io/x-forwarded-prefix: "/{{usuario}}/{{repo}}"
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     nginx.ingress.kubernetes.io/enable-cors: "true"
   namespace: default
@@ -45,10 +45,10 @@ spec:
   rules:
     - http:
         paths:
-          - path: /{{jobName}}/(.*)
+          - path: /{{usuario}}/{{repo}}(/|$)(.*)
             pathType: Prefix
             backend:
               service:
-                name: {{jobName}}
+                name: {{image}}
                 port:
                   number: {{port}}
