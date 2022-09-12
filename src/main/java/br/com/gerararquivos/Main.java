@@ -25,6 +25,7 @@ public class Main {
         String image = (usuario + "-" + repositorio).replace("_", "-");
         Integer port = SQLiteJDBCDriverConnection.getPorta(appPath);
 
+        System.out.println("publicando " + appPath);
         copiarDockerfile(workspace, javaOpts, appPath);
         createArquivoCompleto(workspace, image, port.toString(), usuario, repositorio);
         ExecutarDeployKub.executarDeployKub(image, workspace);
