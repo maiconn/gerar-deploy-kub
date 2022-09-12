@@ -22,7 +22,7 @@ public class Main {
         String usuario = partes[partes.length - 2].toLowerCase();
         String repositorio = partes[partes.length - 1].split("\\.", 2)[0].toLowerCase();
         String appPath = usuario + "/" + repositorio;
-        String image = usuario + "_" + repositorio;
+        String image = (usuario + "-" + repositorio).replace("_", "-");
         Integer port = SQLiteJDBCDriverConnection.getPorta(appPath);
 
         copiarDockerfile(workspace, javaOpts, appPath);
