@@ -15,12 +15,13 @@ public class Main {
 
     public static void main(String[] args) throws IOException, SQLException, InterruptedException {
         System.out.println(List.of(args));
+        if ("0".equals(args[0])) {
+            TrocarArquivoSwagger.modificarArquivoOpenApiConfig(args[1]);
+            return;
+        }
         String workspace = args[0];
         String gitUrl = args[1];
         String javaOpts = args[2];
-
-        TrocarArquivoSwagger.modificarArquivoOpenApiConfig(workspace);
-        ExecutarSh.executarMvnCleanPackage(workspace);
 
         String[] partes = gitUrl.split("/");
         String usuario = partes[partes.length - 2].toLowerCase();
@@ -103,5 +104,4 @@ public class Main {
             writer.close();
         }
     }
-
 }
