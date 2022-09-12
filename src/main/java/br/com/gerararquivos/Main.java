@@ -77,7 +77,7 @@ public class Main {
                 data = in.readAllBytes();
             }
             fileContent = new String(data);
-            String url = "-Dspring.datasource.url=jdbc:oracle:thin:@10.0.20.80:1521/xe";
+            String url = "-Dspring.datasource.url=jdbc:oracle:thin:@10.0.20.80:1521/xe -Doracle.jdbc.timezoneAsRegion=false";
             String port = "-Dserver.port=8080";
             String profile = "-Dspring.profiles.active=hml";
             String appName = "-Dspring.application.name=" + appPath;
