@@ -1,7 +1,8 @@
 package br.com.gerararquivos;
 
 import br.com.gerararquivos.database.SQLiteJDBCDriverConnection;
-import br.com.gerararquivos.shell.ExecutarDeployKub;
+import br.com.gerararquivos.shell.ExecutarSh;
+import br.com.gerararquivos.trocararquivoswagger.TrocarArquivoSwagger;
 
 import java.io.*;
 import java.net.URL;
@@ -18,6 +19,9 @@ public class Main {
         String gitUrl = args[1];
         String javaOpts = args[2];
 
+        TrocarArquivoSwagger.modificarArquivoOpenApiConfig(workspace);
+        ExecutarSh.executarMvnCleanPackage(workspace);
+
         String[] partes = gitUrl.split("/");
         String usuario = partes[partes.length - 2].toLowerCase();
         String repositorio = partes[partes.length - 1].split("\\.", 2)[0].toLowerCase();
@@ -25,13 +29,12 @@ public class Main {
         String image = (usuario + "-" + repositorio).replace("_", "-");
         Integer port = SQLiteJDBCDriverConnection.getPorta(appPath);
 
-        System.out.println("publicando " + appPath);
         copiarDockerfile(workspace, javaOpts, appPath);
-        createArquivoCompleto(workspace, image, port.toString(), usuario, repositorio);
-        ExecutarDeployKub.executarDeployKub(image, workspace);
+        createArquivoKubernetesCompleto(workspace, image, port.toString(), usuario, repositorio);
+        ExecutarSh.executarDeployKub(image, workspace);
     }
 
-    private static void createArquivoCompleto(String workspace, String image, String port, String usuario, String repo) throws IOException {
+    private static void createArquivoKubernetesCompleto(String workspace, String image, String port, String usuario, String repo) throws IOException {
         System.out.println("criando arquivo de deploy completo");
         URL resource = Main.class.getClassLoader().getResource(ARQUIVO_COMPLETO_TEMPLATE);
         if (resource == null) {
