@@ -12,6 +12,11 @@ public class Main {
     private static final String ARQUIVO_DOCKERFILE = "Dockerfile";
 
     public static void main(String[] args) throws IOException, SQLException {
+        try {
+            Class.forName("org.sqlite.JDBC");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         System.out.println(List.of(args));
         String workspace = args[0];
         String gitUrl = args[1];
