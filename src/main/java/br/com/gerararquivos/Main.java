@@ -33,9 +33,13 @@ public class Main {
         copiarDockerfile(workspace, javaOpts, appPath);
         createArquivoKubernetesCompleto(workspace, image, port.toString(), usuario, repositorio);
         ExecutarSh.executarDeployKub(image, workspace);
+        System.out.println("");
+        System.out.println("");
         System.out.println("================================");
         System.out.print("Publicado em ");
         System.out.println("http://vemser-dbc.dbccompany.com.br:39000/" + usuario + "/" + repositorio);
+        System.out.println("================================");
+        System.out.println("");
         System.exit(0);
     }
 
