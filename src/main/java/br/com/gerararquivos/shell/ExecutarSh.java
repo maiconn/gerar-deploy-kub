@@ -13,6 +13,5 @@ public class ExecutarSh {
         Executors.newSingleThreadExecutor().submit(streamGobbler);
         int exitCode = process.waitFor();
         System.out.printf("%s %s ", image, exitCode == 0 ? "" : "não " + "publicado");
-        System.exit(exitCode);
     }
 }
