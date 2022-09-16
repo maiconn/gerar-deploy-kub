@@ -37,7 +37,7 @@ public class Main {
         System.out.println();
         System.out.println("================================");
         System.out.print("Publicado em ");
-        System.out.println("<a href='https://google.com' target='_blank'>http://vemser-dbc.dbccompany.com.br:39000/" + usuario + "/" + repositorio + "</a>");
+        System.out.println("http://vemser-dbc.dbccompany.com.br:39000/" + usuario + "/" + repositorio);
         System.out.println("Logs da app: http://vemser-dbc.dbccompany.com.br:39000/vemser/kub-logs/" + image);
         System.out.println("================================");
         System.out.println("");
