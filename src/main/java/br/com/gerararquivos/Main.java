@@ -21,7 +21,7 @@ public class Main {
             String[] partes = args[2].split("/");
             String repositorio = partes[partes.length - 1].split("\\.", 2)[0].toLowerCase();
             String usuario = partes[partes.length - 2].toLowerCase();
-            String appPath = usuario + "/" + repositorio;
+            String appPath = "/" + usuario + "/" + repositorio;
             copiarArquivoEnv(workspace, appPath);
             modificarArquivoPackage(workspace, appPath);
             System.exit(0);
