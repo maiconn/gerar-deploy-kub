@@ -1,64 +1,42 @@
 package br.com.gerararquivos;
 
-import br.com.gerararquivos.database.SQLiteJDBCDriverConnection;
-import br.com.gerararquivos.shell.ExecutarSh;
 import br.com.gerararquivos.trocararquivoswagger.TrocarArquivoSwagger;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import java.io.*;
-import java.sql.SQLException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class Main {
-    private static final String ARQUIVO_COMPLETO_TEMPLATE = "exemploCompleto.yaml";
-    private static final String ARQUIVO_DOCKERFILE = "Dockerfile";
     private static final String LOG_LEVEL = System.getProperty("log.level");
 
-    public static void main(String[] args) throws IOException, SQLException, InterruptedException {
+    public static void main(String[] args) throws IOException {
         println(List.of(args));
-        if ("0".equals(args[0])) {
+        if ("0".equals(args[0])) { //BACK
             TrocarArquivoSwagger.modificarArquivoOpenApiConfig(args[1]);
-            return;
+        } else if ("1".equals(args[0])) { //FRONT
+            String workspace = args[1];
+            String[] partes = args[2].split("/");
+            String repositorio = partes[partes.length - 1].split("\\.", 2)[0].toLowerCase();
+            String usuario = partes[partes.length - 2].toLowerCase();
+            String appPath = usuario + "/" + repositorio;
+            copiarArquivoEnv(workspace, appPath);
+            modificarArquivoPackage(workspace, appPath);
+            System.exit(0);
         }
-        String workspace = args[0];
-        String gitUrl = args[1];
-        String javaOpts = args[2];
-
-        String[] partes = gitUrl.split("/");
-        String usuario = partes[partes.length - 2].toLowerCase();
-        String repositorio = partes[partes.length - 1].split("\\.", 2)[0].toLowerCase();
-        String appPath = usuario + "/" + repositorio;
-        String image = (usuario + "-" + repositorio).replace("_", "-");
-        Integer port = SQLiteJDBCDriverConnection.getPorta(appPath);
-
-        copiarDockerfile(workspace, javaOpts, appPath);
-        createArquivoKubernetesCompleto(workspace, image, port.toString(), usuario, repositorio);
-        ExecutarSh.executarDeployKub(image, workspace);
-        System.out.println();
-        System.out.println();
-        System.out.println("================================");
-        System.out.print("Publicado em ");
-        System.out.println("http://vemser-dbc.dbccompany.com.br:39000/" + usuario + "/" + repositorio);
-        System.out.println("Logs da app: http://vemser-dbc.dbccompany.com.br:39000/vemser/kub-logs/" + image);
-        System.out.println("================================");
-        System.out.println("");
         System.exit(0);
     }
 
-    private static void createArquivoKubernetesCompleto(String workspace, String image, String port, String usuario, String repo) throws IOException {
-        System.out.println("criando arquivo de deploy completo");
+    private static void copiarArquivoEnv(String workspace, String publicURL) throws IOException {
+        System.out.println("criando arquivo .env");
+        String fileContent = readFileToString("./");
+        fileContent = fileContent.replace("{{URL}}", publicURL);
 
-        String fileContent = readFileToString(ARQUIVO_COMPLETO_TEMPLATE);
-        fileContent = fileContent.replace("{{usuario}}", usuario);
-        fileContent = fileContent.replace("{{repo}}", repo);
-        fileContent = fileContent.replace("{{image}}", image);
-        fileContent = fileContent.replace("{{port}}", port);
-
-        File destino = new File(workspace + "/k8s/complete-deployment.yaml");
+        File destino = new File(workspace + "/reat/.env");
         if (destino.exists()) {
             destino.delete();
-        }
-        if (!destino.getParentFile().exists()) {
-            destino.getParentFile().mkdirs();
         }
         destino.createNewFile();
 
@@ -67,30 +45,23 @@ public class Main {
         writer.close();
     }
 
+    private static void modificarArquivoPackage(String workspace, String publicURL) throws IOException {
+        System.out.println("criando arquivo package.json");
 
-    public static void copiarDockerfile(String workspace, String javaOpts, String appPath) throws IOException {
-        System.out.println("criando arquivo dockerfile");
-        String fileContent = readFileToString(ARQUIVO_DOCKERFILE);
-        String url = "-Dspring.datasource.url=jdbc:oracle:thin:@10.0.20.80:1521/xe -Doracle.jdbc.timezoneAsRegion=false";
-        String port = "-Dserver.port=8080";
-        String profile = "-Dspring.profiles.active=hml";
-        String appName = "-Dspring.application.name=" + appPath;
-        String forwardHeader = "-Dserver.use-forward-headers=true -Dserver.forward-headers-strategy=framework -Dspringdoc.swagger-ui.path=/";
-        fileContent = fileContent.replace("{{javaOpts}}", javaOpts + " "
-                + url + " "
-                + port + " "
-                + profile + " "
-                + appName + " "
-                + forwardHeader);
+        String content = new String(Files.readAllBytes(Paths.get(workspace + "/package.json")));
 
-        File destino = new File(workspace + "/Dockerfile");
+        JsonObject convertedObject = new Gson().fromJson(content, JsonObject.class);
+        convertedObject.addProperty("homepage", publicURL);
+
+
+        File destino = new File(workspace + "/package.json");
         if (destino.exists()) {
             destino.delete();
         }
         destino.createNewFile();
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(destino));
-        writer.append(fileContent);
+        writer.append(convertedObject.toString());
         writer.close();
     }
 

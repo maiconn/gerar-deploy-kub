@@ -26,7 +26,7 @@ public class TrocarArquivoSwagger {
             scan.close();
             FileWriter fileWriter = new FileWriter(file, false);
             fileWriter.write(pacote + "\n");
-            scan = new Scanner(Main.class.getClassLoader().getResourceAsStream("OpenApiConfig.java"));
+            scan = new Scanner(Main.class.getClassLoader().getResourceAsStream("spring/OpenApiConfig.java"));
             while (scan.hasNextLine()) {
                 fileWriter.write(scan.nextLine());
                 fileWriter.write("\n");
