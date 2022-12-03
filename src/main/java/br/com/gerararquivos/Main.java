@@ -24,7 +24,6 @@ public class Main {
             String appPath = "/" + usuario + "/" + repositorio;
             copiarArquivoEnv(workspace, appPath);
             modificarArquivoPackage(workspace, appPath);
-            System.exit(0);
         }
         System.exit(0);
     }
