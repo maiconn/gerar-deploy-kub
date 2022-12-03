@@ -31,10 +31,10 @@ public class Main {
 
     private static void copiarArquivoEnv(String workspace, String publicURL) throws IOException {
         System.out.println("criando arquivo .env");
-        String fileContent = readFileToString("./");
+        String fileContent = readFileToString("./react/.env");
         fileContent = fileContent.replace("{{URL}}", publicURL);
 
-        File destino = new File(workspace + "/reat/.env");
+        File destino = new File(workspace + "/.env");
         if (destino.exists()) {
             destino.delete();
         }
