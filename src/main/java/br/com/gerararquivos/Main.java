@@ -22,16 +22,17 @@ public class Main {
             String repositorio = partes[partes.length - 1].split("\\.", 2)[0].toLowerCase();
             String usuario = partes[partes.length - 2].toLowerCase();
             String appPath = "/" + usuario + "/" + repositorio;
-            copiarArquivoEnv(workspace, appPath);
+            copiarArquivoEnv(workspace, appPath, args[3]);
             modificarArquivoPackage(workspace, appPath);
         }
         System.exit(0);
     }
 
-    private static void copiarArquivoEnv(String workspace, String publicURL) throws IOException {
+    private static void copiarArquivoEnv(String workspace, String publicURL, String javaOpts) throws IOException {
         System.out.println("criando arquivo .env");
         String fileContent = readFileToString("react/.env");
         fileContent = fileContent.replace("{{URL}}", publicURL);
+        fileContent = fileContent.replace("{{URL_BACK}}", javaOpts);
 
         File destino = new File(workspace + "/.env");
         if (destino.exists()) {
